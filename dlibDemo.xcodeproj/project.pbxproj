@@ -199,6 +199,7 @@
 		AA98100E206DCD2F00711FAF /* GPUImagePicture+TextureSubimage.m in Sources */ = {isa = PBXBuildFile; fileRef = AA980F4F206DCD2F00711FAF /* GPUImagePicture+TextureSubimage.m */; };
 		AA98100F206DCD2F00711FAF /* GPUImagePicture.m in Sources */ = {isa = PBXBuildFile; fileRef = AA980F51206DCD2F00711FAF /* GPUImagePicture.m */; };
 		AA981010206DCD2F00711FAF /* GPUImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = AA980F53206DCD2F00711FAF /* GPUImageView.m */; };
+		AADA2E7F2073690500A5ADE4 /* 1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AADA2E7E2073690500A5ADE4 /* 1.jpg */; };
 		AD6AB09FABD3D48E6D2E239D /* libPods-dlibDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE58DC11441FFCD4400DE83D /* libPods-dlibDemo.a */; };
 /* End PBXBuildFile section */
 
@@ -602,6 +603,7 @@
 		AA980F51206DCD2F00711FAF /* GPUImagePicture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUImagePicture.m; sourceTree = "<group>"; };
 		AA980F52206DCD2F00711FAF /* GPUImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUImageView.h; sourceTree = "<group>"; };
 		AA980F53206DCD2F00711FAF /* GPUImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUImageView.m; sourceTree = "<group>"; };
+		AADA2E7E2073690500A5ADE4 /* 1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 1.jpg; sourceTree = "<group>"; };
 		AB7CF43DDB78543CDBFB549E /* Pods-dlibDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-dlibDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-dlibDemo/Pods-dlibDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		FE58DC11441FFCD4400DE83D /* libPods-dlibDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-dlibDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -692,6 +694,7 @@
 				AA0392B4206B2C620005CE12 /* LaunchScreen.storyboard */,
 				AA0392B7206B2C620005CE12 /* Info.plist */,
 				AA0392B8206B2C620005CE12 /* main.m */,
+				AADA2E7E2073690500A5ADE4 /* 1.jpg */,
 			);
 			path = dlibDemo;
 			sourceTree = "<group>";
@@ -1222,6 +1225,7 @@
 				AA0392B3206B2C620005CE12 /* Assets.xcassets in Resources */,
 				AA0392B1206B2C620005CE12 /* Main.storyboard in Resources */,
 				AA039302206CB5C70005CE12 /* shape_predictor_68_face_landmarks.dat in Resources */,
+				AADA2E7F2073690500A5ADE4 /* 1.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1676,7 +1680,7 @@
 					"-DDLIB_NO_GUI_SUPPORT",
 					"-DDLIB_JPEG_SUPPORT",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.zweigraf.DisplayLiveSamkples;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zweigraf.DisplayLiveSa9mkples;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1717,7 +1721,7 @@
 					"-DDLIB_NO_GUI_SUPPORT",
 					"-DDLIB_JPEG_SUPPORT",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.zweigraf.DisplayLiveSamkples;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zweigraf.DisplayLiveSa9mkples;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

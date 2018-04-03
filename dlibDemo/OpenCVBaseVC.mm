@@ -36,8 +36,6 @@
 //** 滤镜 */
 @property(nonatomic, strong) GPUImageBeautifyFilter *beautifyFilter;
 
-//** img */
-@property(nonatomic, strong) UIImageView *imagev;
 
 
 
@@ -86,7 +84,7 @@
     [beautifyFilter addTarget:self.filterView];
     self.beautifyFilter = beautifyFilter;
     [self metaOutputMethod];
-    [self outputMethod];
+//    [self outputMethod];
     [self.wrapper prepare];
 
 }
@@ -95,17 +93,20 @@
     self.layer.frame = self.view.frame;
     [self.view.layer addSublayer:self.layer];
     
+    self.filterView = [[GPUImageView alloc] initWithFrame:self.view.frame];
+    self.filterView.center = self.view.center;
+    [self.view addSubview:self.filterView];
     
-//
-//    self.imagev=[[UIImageView alloc] init];
-//    self.imagev.frame=CGRectMake(0, 300, 300, 200);
-//    self.imagev.backgroundColor=[UIColor orangeColor];
+    GPUImageBeautifyFilter *beautifyFilter = [[GPUImageBeautifyFilter alloc] init];
+    self.beautifyFilter = beautifyFilter;
+    
     
    // 设置视频格式
     [self initVideoSet];
 }
 
 - (void)metaOutputMethod{
+    
     AVCaptureMetadataOutput *metaOutput = [[AVCaptureMetadataOutput alloc] init];
     dispatch_queue_t metaOutputQueue = dispatch_queue_create("metaOutput", DISPATCH_QUEUE_SERIAL);
     [metaOutput setMetadataObjectsDelegate:self queue:metaOutputQueue];
@@ -116,7 +117,7 @@
 }
 - (void)outputMethod{
     //设置输出的代理
-    AVCaptureVideoDataOutput *output = [[AVCaptureVideoDataOutput alloc]init];
+    AVCaptureVideoDataOutput *output = (AVCaptureVideoDataOutput *)[self.videoCamera valueForKey:@"videoOutput"];
     dispatch_queue_t videoQueue = dispatch_queue_create("VideoQueue", DISPATCH_QUEUE_SERIAL);
     [output setSampleBufferDelegate:self queue:videoQueue];
     if ([self.videoCamera.captureSession canAddOutput:output]) {
@@ -188,6 +189,11 @@
 }
 #pragma mark - 获取视频帧，处理视频
 - (void)captureOutput:(AVCaptureOutput *)output didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
+    
+    
+    
+    
+    NSLog(@"didOutputSampleBuffer");
     //确定人脸方向
     connection.videoOrientation = AVCaptureVideoOrientationPortrait;
     connection.videoMirrored = YES;
@@ -195,30 +201,24 @@
     for (AVMetadataObject *faceObject in self.currentMetadata) {
         AVMetadataObject *convertedObject = [output transformedMetadataObjectForMetadataObject:faceObject connection:connection];
         NSValue *value = [NSValue valueWithCGRect:convertedObject.bounds];
-        NSLog(@"value:%@",value);
         [boundsArray addObject:value];
     }
-//    CMSampleBufferRef上面描人脸特征点
+    //CMSampleBufferRef上面描人脸特征点
     [self.wrapper doWorkOnSampleBuffer:sampleBuffer inRects:boundsArray];
-  
-    
-    // 通过sampleBuffer得到图片
-//    UIImage *image = [self imageFromSampleBuffer:sampleBuffer];
-//    NSData *mData = UIImageJPEGRepresentation(image, 0.5);
-//    //这里的mData是NSData对象，后面的0.5代表生成的图片质量
-//    //在主线程中执行才会把图片显示出来
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        [self.imagev setImage:[UIImage imageWithData:mData]];
-//    });
-//    [self.view addSubview:self.imagev];
-//    NSLog(@"output,mdata:%@",image);
-    
-    
-    //CMSampleBufferRef 美颜
-    [self.layer enqueueSampleBuffer:sampleBuffer];
-
-
+    // 转换UIImage
+    UIImage *image = [self.wrapper convertSampleBufferToImage:sampleBuffer];
+    if (image.size.width > 0 && image.size.height > 0) {
+        // 创建图片源
+        GPUImagePicture *picture = [[GPUImagePicture alloc]initWithImage:image];
+        [picture addTarget:self.beautifyFilter];
+        [self.beautifyFilter addTarget:self.filterView];
+        
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [picture processImage];
+        });
+    }
 }
+
 
 - (void)captureOutput:(AVCaptureOutput *)output didOutputMetadataObjects:(NSArray<__kindof AVMetadataObject *> *)metadataObjects fromConnection:(AVCaptureConnection *)connection{
     self.currentMetadata = [NSMutableArray arrayWithArray:metadataObjects];
@@ -226,8 +226,8 @@
 
 - (void)willOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer{
     
-    AVCaptureOutput *output = (AVCaptureOutput *)[self.videoCamera valueForKey:@"videoOutput"];
-    AVCaptureConnection *connection = self.videoCamera.videoCaptureConnection;
+    AVCaptureVideoDataOutput *output = (AVCaptureVideoDataOutput *)[self.videoCamera valueForKey:@"videoOutput"];
+    AVCaptureConnection *connection =  [self.videoCamera videoCaptureConnection];
     NSMutableArray *boundsArray = [NSMutableArray array];
     for (AVMetadataObject *faceObject in self.currentMetadata) {
         AVMetadataObject *convertedObject = [output
@@ -235,54 +235,12 @@
         NSValue *value = [NSValue valueWithCGRect:convertedObject.bounds];
         [boundsArray addObject:value];
     }
-    
-    
     if (boundsArray.count > 0) {
         [self.wrapper doWorkOnSampleBuffer:sampleBuffer inRects:boundsArray];
     }
 }
 
-// 把buffer流生成图片
-- (UIImage *) imageFromSampleBuffer:(CMSampleBufferRef) sampleBuffer
-{
-    // Get a CMSampleBuffer's Core Video image buffer for the media data
-    CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-    // Lock the base address of the pixel buffer
-    CVPixelBufferLockBaseAddress(imageBuffer, 0);
-    
-    // Get the number of bytes per row for the pixel buffer
-    void *baseAddress = CVPixelBufferGetBaseAddress(imageBuffer);
-    
-    // Get the number of bytes per row for the pixel buffer
-    size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
-    // Get the pixel buffer width and height
-    size_t width = CVPixelBufferGetWidth(imageBuffer);
-    size_t height = CVPixelBufferGetHeight(imageBuffer);
-    
-    // Create a device-dependent RGB color space
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    
-    // Create a bitmap graphics context with the sample buffer data
-    CGContextRef context = CGBitmapContextCreate(baseAddress, width, height, 8,
-                                                 bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
-    // Create a Quartz image from the pixel data in the bitmap graphics context
-    CGImageRef quartzImage = CGBitmapContextCreateImage(context);
-    // Unlock the pixel buffer
-    CVPixelBufferUnlockBaseAddress(imageBuffer,0);
-    
-    // Free up the context and color space
-    CGContextRelease(context);
-    CGColorSpaceRelease(colorSpace);
-    
-    // Create an image object from the Quartz image
-    //UIImage *image = [UIImage imageWithCGImage:quartzImage];
-    UIImage *image = [UIImage imageWithCGImage:quartzImage scale:1.0f orientation:UIImageOrientationRight];
-    
-    // Release the Quartz image
-    CGImageRelease(quartzImage);
-    
-    return (image);
-}
+
 
 #pragma mark - 摄像头输入
 - (AVCaptureDeviceInput *)frontCameraInput {
