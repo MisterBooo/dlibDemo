@@ -241,7 +241,7 @@
         CGMutablePathRef bottomPath = CGPathCreateMutable();
         CGPoint bottomOrginPoint = CGPointMake(p48.x()/2 + kXAddAxleNumber, (p48.y() + kYAddAxleNumber)/2);
         CGPathMoveToPoint(bottomPath, NULL, bottomOrginPoint.x, bottomOrginPoint.y);
-        [self addLineToPoint:p60 atPath:bottomPath];
+//        [self addLineToPoint:p60 satPath:bottomPath];
         [self addLineToPoint:p67 atPath:bottomPath];
         [self addLineToPoint:p66 atPath:bottomPath];
         [self addLineToPoint:p65 atPath:bottomPath];

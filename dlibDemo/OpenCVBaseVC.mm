@@ -36,21 +36,35 @@
 //** 滤镜 */
 @property(nonatomic, strong) GPUImageBeautifyFilter *beautifyFilter;
 
-//** 置顶View */
-@property(nonatomic, strong) UIView *currentView;
-
 //**嘴唇 topLayer */
 @property(nonatomic, strong) CAShapeLayer *topLayer;
 
 //**嘴唇 bottomLayer */
 @property(nonatomic, strong) CAShapeLayer *bottomLayer;
-//**嘴唇 bottomView */
+//** 嘴唇颜色 */
+@property(nonatomic, strong) UIColor *lipColor;
+//**颜色选择 View */
 @property (weak, nonatomic) IBOutlet UIView *colorView;
+
+@property (weak, nonatomic) IBOutlet UIButton *purpleButton;
+@property (weak, nonatomic) IBOutlet UIButton *redButton;
+@property (weak, nonatomic) IBOutlet UIButton *yellowButton;
 
 
 @end
 
 @implementation OpenCVBaseVC
+- (IBAction)purpleButtonClick:(id)sender {
+    [self p_setLipColor:[UIColor purpleColor]];
+}
+- (IBAction)redButtonClick:(id)sender {
+    [self p_setLipColor:[UIColor redColor]];
+}
+- (IBAction)yellowClick:(id)sender {
+    [self p_setLipColor:[UIColor yellowColor]];
+}
+
+
 
 - (instancetype)initWithType:(NSInteger )type{
     if (self = [super init]) {
@@ -79,6 +93,12 @@
     }else{
         [self dlibVideo];
     }
+}
+- (void)p_setLipColor:(UIColor *)lipColor{
+    _bottomLayer.fillColor = lipColor.CGColor;//填充色
+    _bottomLayer.strokeColor = lipColor.CGColor;
+    _topLayer.fillColor = lipColor.CGColor;//填充色
+    _topLayer.strokeColor = lipColor.CGColor;
 }
 
 
@@ -181,21 +201,6 @@
     metaOutput.metadataObjectTypes = @[AVMetadataObjectTypeFace];
     [self.wrapper prepare];
     
-    
-    
-    
-////    //创建预览图层
-//    AVCaptureVideoPreviewLayer *previewLayer = [[AVCaptureVideoPreviewLayer alloc]initWithSession:session];
-//    //设置layer大小
-//    CGFloat layerW = self.view.bounds.size.width - 40;
-//    previewLayer.frame = CGRectMake(20, 70, layerW, layerW);
-//    //视频大小根据frame大小自动调整
-//    previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
-//    [self.view.layer addSublayer:previewLayer];
-//    self.previewLayer = previewLayer;
-    
-    
-    
     //启动session
     [session startRunning];
     
@@ -288,10 +293,8 @@
 -(CAShapeLayer *)topLayer{
     if (!_topLayer) {
         _topLayer = [CAShapeLayer layer];
-        _topLayer.fillColor=[UIColor whiteColor].CGColor;//填充色
-        _topLayer.strokeColor=[UIColor redColor].CGColor;
-        
-        
+        _topLayer.fillColor=[UIColor clearColor].CGColor;//填充色
+        _topLayer.strokeColor=[UIColor clearColor].CGColor;
         [self.view.layer addSublayer:_topLayer];
     }
     return _topLayer;
@@ -299,21 +302,12 @@
 - (CAShapeLayer *)bottomLayer{
     if (!_bottomLayer) {
         _bottomLayer = [CAShapeLayer layer];
-        _bottomLayer.fillColor=[UIColor orangeColor].CGColor;//填充色
-        _bottomLayer.strokeColor=[UIColor redColor].CGColor;
+        _bottomLayer.fillColor=[UIColor clearColor].CGColor;//填充色
+        _bottomLayer.strokeColor=[UIColor clearColor].CGColor;
         [self.view.layer addSublayer:_bottomLayer];
     }
     return _bottomLayer;
 }
 
 
-- (UIView *)currentView{
-    if (!_currentView) {
-        _currentView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.origin.y+ 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
-        _currentView.backgroundColor = [UIColor grayColor];
-        _currentView.alpha = 0.5;
-
-    }
-    return _currentView;
-}
 @end

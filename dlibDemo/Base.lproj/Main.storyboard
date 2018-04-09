@@ -18,10 +18,51 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jmy-F1-nXD">
+                            <view alpha="0.5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jmy-F1-nXD">
                                 <rect key="frame" x="0.0" y="597" width="375" height="70"/>
-                                <color key="backgroundColor" red="0.46901197709999998" green="0.26696798690000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="E52-ac-bzo">
+                                        <rect key="frame" x="56" y="20" width="46" height="30"/>
+                                        <color key="backgroundColor" red="0.46901197709999998" green="0.26696798690000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="46" id="Q41-J5-PTq"/>
+                                        </constraints>
+                                        <connections>
+                                            <action selector="purpleButtonClick:" destination="ePC-Gi-Tdq" eventType="touchUpInside" id="yvr-w4-MKa"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hGs-Ab-q9p">
+                                        <rect key="frame" x="154" y="20" width="46" height="30"/>
+                                        <color key="backgroundColor" red="1" green="0.097023863187277293" blue="0.054842689553379009" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="46" id="AqU-ZA-4GO"/>
+                                        </constraints>
+                                        <connections>
+                                            <action selector="redButtonClick:" destination="ePC-Gi-Tdq" eventType="touchUpInside" id="Eep-So-Mgu"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rmy-nu-ZpT">
+                                        <rect key="frame" x="274" y="20" width="46" height="30"/>
+                                        <color key="backgroundColor" red="0.96118275183318491" green="1" blue="0.12169265123303585" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="46" id="zGl-iq-KJa"/>
+                                        </constraints>
+                                        <connections>
+                                            <action selector="yellowClick:" destination="ePC-Gi-Tdq" eventType="touchUpInside" id="2op-yT-ybo"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
+                                    <constraint firstItem="hGs-Ab-q9p" firstAttribute="leading" secondItem="E52-ac-bzo" secondAttribute="trailing" constant="52" id="A7p-Lj-Bw6"/>
+                                    <constraint firstAttribute="bottom" secondItem="hGs-Ab-q9p" secondAttribute="bottom" constant="20" id="LdR-tV-VMu"/>
+                                    <constraint firstAttribute="bottom" secondItem="rmy-nu-ZpT" secondAttribute="bottom" constant="20" id="WhH-ke-RNm"/>
+                                    <constraint firstItem="rmy-nu-ZpT" firstAttribute="top" secondItem="Jmy-F1-nXD" secondAttribute="top" constant="20" id="ckU-Qv-9sz"/>
+                                    <constraint firstItem="E52-ac-bzo" firstAttribute="leading" secondItem="Jmy-F1-nXD" secondAttribute="leading" constant="56" id="lNw-yl-3Q3"/>
+                                    <constraint firstAttribute="bottom" secondItem="E52-ac-bzo" secondAttribute="bottom" constant="20" id="lxb-Ba-axn"/>
+                                    <constraint firstItem="E52-ac-bzo" firstAttribute="top" secondItem="Jmy-F1-nXD" secondAttribute="top" constant="20" id="m90-2R-yWC"/>
+                                    <constraint firstItem="rmy-nu-ZpT" firstAttribute="leading" secondItem="hGs-Ab-q9p" secondAttribute="trailing" constant="74" id="mmN-ji-Q22"/>
+                                    <constraint firstItem="hGs-Ab-q9p" firstAttribute="top" secondItem="Jmy-F1-nXD" secondAttribute="top" constant="20" id="osV-Re-Iz4"/>
                                     <constraint firstAttribute="height" constant="70" id="sJN-Ak-vpo"/>
                                 </constraints>
                             </view>
@@ -36,6 +77,9 @@
                     </view>
                     <connections>
                         <outlet property="colorView" destination="Jmy-F1-nXD" id="oqM-iE-fwq"/>
+                        <outlet property="purpleButton" destination="E52-ac-bzo" id="H5h-UL-IZc"/>
+                        <outlet property="redButton" destination="hGs-Ab-q9p" id="d6H-F9-qvR"/>
+                        <outlet property="yellowButton" destination="rmy-nu-ZpT" id="Kg1-TB-n9M"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kIc-Lf-tgs" userLabel="First Responder" sceneMemberID="firstResponder"/>
