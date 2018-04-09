@@ -36,7 +36,16 @@
 //** 滤镜 */
 @property(nonatomic, strong) GPUImageBeautifyFilter *beautifyFilter;
 
+//** 置顶View */
+@property(nonatomic, strong) UIView *currentView;
 
+//**嘴唇 topLayer */
+@property(nonatomic, strong) CAShapeLayer *topLayer;
+
+//**嘴唇 bottomLayer */
+@property(nonatomic, strong) CAShapeLayer *bottomLayer;
+//**嘴唇 bottomView */
+@property (weak, nonatomic) IBOutlet UIView *colorView;
 
 
 @end
@@ -59,6 +68,9 @@
     self.view.backgroundColor = [UIColor whiteColor];
     self.wrapper = [[DlibWrapper alloc] init];
     self.currentMetadata = [NSMutableArray array];
+    [self dlibVideo];
+    [self.view bringSubviewToFront:self.colorView];
+    
 }
 - (void)setTpye:(NSInteger)type{
     _type = type;
@@ -86,6 +98,8 @@
     [self metaOutputMethod];
 //    [self outputMethod];
     [self.wrapper prepare];
+
+
 
 }
 - (void)dlibVideo{
@@ -190,12 +204,8 @@
 #pragma mark - 获取视频帧，处理视频
 - (void)captureOutput:(AVCaptureOutput *)output didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
     
-    
-    
-    
-    NSLog(@"didOutputSampleBuffer");
     //确定人脸方向
-    connection.videoOrientation = AVCaptureVideoOrientationPortrait;
+    connection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
     connection.videoMirrored = YES;
     NSMutableArray *boundsArray = [NSMutableArray array];
     for (AVMetadataObject *faceObject in self.currentMetadata) {
@@ -204,7 +214,7 @@
         [boundsArray addObject:value];
     }
     //CMSampleBufferRef上面描人脸特征点
-    [self.wrapper doWorkOnSampleBuffer:sampleBuffer inRects:boundsArray];
+    [self.wrapper doWorkOnSampleBuffer:sampleBuffer inRects:boundsArray atCurrentView:self.view drawTopLayer:self.topLayer drawBottomLayer:self.bottomLayer];
     // 转换UIImage
     UIImage *image = [self.wrapper convertSampleBufferToImage:sampleBuffer];
     if (image.size.width > 0 && image.size.height > 0) {
@@ -212,7 +222,7 @@
         GPUImagePicture *picture = [[GPUImagePicture alloc]initWithImage:image];
         [picture addTarget:self.beautifyFilter];
         [self.beautifyFilter addTarget:self.filterView];
-        
+
         dispatch_sync(dispatch_get_main_queue(), ^{
             [picture processImage];
         });
@@ -235,9 +245,9 @@
         NSValue *value = [NSValue valueWithCGRect:convertedObject.bounds];
         [boundsArray addObject:value];
     }
-    if (boundsArray.count > 0) {
-        [self.wrapper doWorkOnSampleBuffer:sampleBuffer inRects:boundsArray];
-    }
+//    if (boundsArray.count > 0) {
+//        [self.wrapper doWorkOnSampleBuffer:sampleBuffer inRects:boundsArray];
+//    }
 }
 
 
@@ -273,5 +283,37 @@
         self.videoCamera.horizontallyMirrorFrontFacingCamera = YES;
     }
     return _videoCamera;
+}
+
+-(CAShapeLayer *)topLayer{
+    if (!_topLayer) {
+        _topLayer = [CAShapeLayer layer];
+        _topLayer.fillColor=[UIColor whiteColor].CGColor;//填充色
+        _topLayer.strokeColor=[UIColor redColor].CGColor;
+        
+        
+        [self.view.layer addSublayer:_topLayer];
+    }
+    return _topLayer;
+}
+- (CAShapeLayer *)bottomLayer{
+    if (!_bottomLayer) {
+        _bottomLayer = [CAShapeLayer layer];
+        _bottomLayer.fillColor=[UIColor orangeColor].CGColor;//填充色
+        _bottomLayer.strokeColor=[UIColor redColor].CGColor;
+        [self.view.layer addSublayer:_bottomLayer];
+    }
+    return _bottomLayer;
+}
+
+
+- (UIView *)currentView{
+    if (!_currentView) {
+        _currentView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.origin.y+ 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
+        _currentView.backgroundColor = [UIColor grayColor];
+        _currentView.alpha = 0.5;
+
+    }
+    return _currentView;
 }
 @end

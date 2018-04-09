@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="m0n-DN-IkX">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="ePC-Gi-Tdq">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -10,6 +10,38 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
+        <!--OpenCV BaseVC-->
+        <scene sceneID="2AJ-go-TeF">
+            <objects>
+                <viewController id="ePC-Gi-Tdq" customClass="OpenCVBaseVC" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="SAO-Q7-Swb">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jmy-F1-nXD">
+                                <rect key="frame" x="0.0" y="597" width="375" height="70"/>
+                                <color key="backgroundColor" red="0.46901197709999998" green="0.26696798690000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="70" id="sJN-Ak-vpo"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="Jmy-F1-nXD" firstAttribute="leading" secondItem="qrh-dB-CyZ" secondAttribute="leading" id="5nr-ye-fqe"/>
+                            <constraint firstItem="Jmy-F1-nXD" firstAttribute="bottom" secondItem="qrh-dB-CyZ" secondAttribute="bottom" id="CRt-Xl-8z5"/>
+                            <constraint firstItem="qrh-dB-CyZ" firstAttribute="trailing" secondItem="Jmy-F1-nXD" secondAttribute="trailing" id="rt1-uS-ajj"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="qrh-dB-CyZ"/>
+                    </view>
+                    <connections>
+                        <outlet property="colorView" destination="Jmy-F1-nXD" id="oqM-iE-fwq"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="kIc-Lf-tgs" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1700" y="6.746626686656672"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="gPU-2r-HwR">
             <objects>

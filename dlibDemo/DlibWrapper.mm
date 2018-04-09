@@ -3,6 +3,12 @@
 
 #include <dlib/image_processing.h>
 #include <dlib/image_io.h>
+#include <dlib/image_transforms/draw.h>
+#include <MacTypes.h>
+
+#define kYAddAxleNumber 10
+#define kXAddAxleNumber 30
+
 
 @interface DlibWrapper ()
 
@@ -40,7 +46,7 @@
     self.prepared = YES;
 }
 
-- (void)doWorkOnSampleBuffer:(CMSampleBufferRef)sampleBuffer inRects:(NSArray<NSValue *> *)rects {
+- (void)doWorkOnSampleBuffer:(CMSampleBufferRef)sampleBuffer inRects:(NSArray<NSValue *> *)rects atCurrentView:(UIView *)currentView drawTopLayer:(CAShapeLayer *)topLayer drawBottomLayer:(CAShapeLayer *)bottomLayer {
     
     if (!self.prepared) {
         [self prepare];
@@ -52,7 +58,7 @@
     // MARK: magic
     CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
     CVPixelBufferLockBaseAddress(imageBuffer, kCVPixelBufferLock_ReadOnly);
-
+    
     size_t width = CVPixelBufferGetWidth(imageBuffer);
     size_t height = CVPixelBufferGetHeight(imageBuffer);
     char *baseBuffer = (char *)CVPixelBufferGetBaseAddress(imageBuffer);
@@ -87,6 +93,28 @@
     // convert the face bounds list to dlib format
     std::vector<dlib::rectangle> convertedRectangles = [DlibWrapper convertCGRectValueArray:rects];
     
+
+
+    dlib::point p48;
+    dlib::point p49;
+    dlib::point p50;
+    dlib::point p51;
+    dlib::point p52;
+    dlib::point p53;
+    dlib::point p54;
+    dlib::point p55;
+    dlib::point p56;
+    dlib::point p57;
+    dlib::point p58;
+    dlib::point p59;
+    dlib::point p60;
+    dlib::point p61;
+    dlib::point p62;
+    dlib::point p63;
+    dlib::point p64;
+    dlib::point p65;
+    dlib::point p66;
+    dlib::point p67;
     // for every detected face
     // convertedRectangles包含检测到人脸的个数
     for (unsigned long j = 0; j < convertedRectangles.size(); ++j)
@@ -99,15 +127,141 @@
         
         // and draw them into the image (samplebuffer)
         // num_parts:检测到特征点的个数
-        for (unsigned long k = 0; k < shape.num_parts(); k++) {
+        unsigned long nums =  shape.num_parts();
+//        NSLog(@"nums:%ld",nums);   输出68个点
+//        dlib::point p_front = shape.part(48);
+//        dlib::point p_back = shape.part(48);
+       
+        //描绘嘴唇的点
+        for (unsigned long k = 48; k < nums; k++) {
             // 依次获取特征点
+//            p_back = p_front;
             dlib::point p = shape.part(k);
-            // 在img上画点，参数分别是imge、点坐标、点的半径、点的像素(颜色)
-            draw_solid_circle(img, p, 6, dlib::rgb_pixel(255, 255, 0));
-//            printf("x:%ld,y:%ld\n",p.x(),p.y());
+//            p_front = p;
+            //画线
+//            draw_line(img,p_back,p_front,dlib::rgb_pixel(0, 255, 0));
+//            // 在img上画点，参数分别是imge、点坐标、点的半径、点的像素(颜色)
+//            draw_solid_circle(img, p, 6, dlib::rgb_pixel(255, 255, 0));
+//            printf("x:%ld,y:%ld,img:%ld\n",p.x(),p.y(),img.size());
+            //记录区域点
+            switch (k) {
+                case 48:
+                    p48 = p;
+                    break;
+                case 49:
+                    p49 = p;
+                    break;
+                case 50:
+                    p50 = p;
+                    break;
+                case 51:
+                    p51 = p;
+                    break;
+                case 52:
+                    p52 = p;
+                    break;
+                case 53:
+                    p53 = p;
+                    break;
+                case 54:
+                    p54 = p;
+                    break;
+                case 55:
+                    p55 = p;
+                    break;
+                case 56:
+                    p56 = p;
+                    break;
+                case 57:
+                    p57 = p;
+                    break;
+                case 58:
+                    p58 = p;
+                    break;
+                case 59:
+                    p59 = p;
+                    break;
+                case 60:
+                    p60 = p;
+                    break;
+                case 61:
+                    p61 = p;
+                    break;
+                case 62:
+                    p62 = p;
+                    break;
+                case 63:
+                    p63 = p;
+                    break;
+                case 64:
+                    p64 = p;
+                    break;
+                case 65:
+                    p65 = p;
+                    break;
+                case 66:
+                    p66 = p;
+                    break;
+                case 67:
+                    p67 = p;
+                    break;
+                default:
+                    break;
+            }
+            
+            
         }
-    }
+ 
     
+
+    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        //生成path
+        CGMutablePathRef topPath = CGPathCreateMutable();
+        CGPoint orginPoint = CGPointMake((p48.x() + kXAddAxleNumber)/2 , (p48.y() + kYAddAxleNumber)/2);
+        CGPathMoveToPoint(topPath, NULL, orginPoint.x, orginPoint.y);
+        [self addLineToPoint:p49 atPath:topPath];
+        [self addLineToPoint:p50 atPath:topPath];
+        [self addLineToPoint:p51 atPath:topPath];
+        [self addLineToPoint:p52 atPath:topPath];
+        [self addLineToPoint:p53 atPath:topPath];
+        [self addLineToPoint:p54 atPath:topPath];
+        [self addLineToPoint:p64 atPath:topPath];
+        [self addLineToPoint:p63 atPath:topPath];
+        [self addLineToPoint:p62 atPath:topPath];
+        [self addLineToPoint:p61 atPath:topPath];
+        [self addLineToPoint:p60 atPath:topPath];
+        [self addLineToPoint:p48 atPath:topPath];
+
+        topLayer.path = topPath;
+        [currentView.layer addSublayer:topLayer];
+        
+        
+        //生成path
+        CGMutablePathRef bottomPath = CGPathCreateMutable();
+        CGPoint bottomOrginPoint = CGPointMake(p48.x()/2 + kXAddAxleNumber, (p48.y() + kYAddAxleNumber)/2);
+        CGPathMoveToPoint(bottomPath, NULL, bottomOrginPoint.x, bottomOrginPoint.y);
+        [self addLineToPoint:p60 atPath:bottomPath];
+        [self addLineToPoint:p67 atPath:bottomPath];
+        [self addLineToPoint:p66 atPath:bottomPath];
+        [self addLineToPoint:p65 atPath:bottomPath];
+        [self addLineToPoint:p64 atPath:bottomPath];
+        [self addLineToPoint:p54 atPath:bottomPath];
+        [self addLineToPoint:p55 atPath:bottomPath];
+        [self addLineToPoint:p56 atPath:bottomPath];
+        [self addLineToPoint:p57 atPath:bottomPath];
+        [self addLineToPoint:p58 atPath:bottomPath];
+        [self addLineToPoint:p59 atPath:bottomPath];
+        [self addLineToPoint:p48 atPath:bottomPath];
+        
+        bottomLayer.path = bottomPath;
+        [currentView.layer addSublayer:bottomLayer];
+        
+        
+        
+    });
+    
+//    NSLog(@"topView.frame:%@",NSStringFromCGRect(topView.frame));
     // lets put everything back where it belongs
     CVPixelBufferLockBaseAddress(imageBuffer, 0);
 
@@ -128,6 +282,9 @@
         position++;
     }
     CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
+}
+- (void)addLineToPoint:(dlib::point )toPoint atPath:(CGMutablePathRef )path{
+    CGPathAddLineToPoint(path, NULL, (toPoint.x() + kXAddAxleNumber )/2, (toPoint.y() + kYAddAxleNumber)/2);
 }
 
 + (std::vector<dlib::rectangle>)convertCGRectValueArray:(NSArray<NSValue *> *)rects {
@@ -177,7 +334,102 @@
     
     return image;
 }
-
-
+////记录区域点
+//switch (k) {
+//    case 48:
+//        p48 = p;
+//        break;
+//    case 49:
+//        p49 = p;
+//        break;
+//    case 50:
+//        p50 = p;
+//        break;
+//    case 51:
+//        p51 = p;
+//        break;
+//    case 52:
+//        p52 = p;
+//        break;
+//    case 53:
+//        p53 = p;
+//        break;
+//    case 54:
+//        p54 = p;
+//        break;
+//    case 55:
+//        p55 = p;
+//        break;
+//    case 56:
+//        p56 = p;
+//        break;
+//    case 57:
+//        p57 = p;
+//        break;
+//    case 58:
+//        p58 = p;
+//        break;
+//    case 59:
+//        p59 = p;
+//        break;
+//    case 60:
+//        p60 = p;
+//        break;
+//    case 61:
+//        p61 = p;
+//        break;
+//    case 62:
+//        p62 = p;
+//        break;
+//    case 63:
+//        p63 = p;
+//        break;
+//    case 64:
+//        p64 = p;
+//        break;
+//    case 65:
+//        p65 = p;
+//        break;
+//    case 66:
+//        p66 = p;
+//        break;
+//    default:
+//        break;
+//}
+/*
+ dispatch_async(dispatch_get_main_queue(), ^{
+ 
+ //        topView.frame = CGRectMake(p48.x()/2, p51.y()/2, p64.x()/2-p48.x()/2, p62.y()/2-p51.y()/2);
+ //        bottomView.frame = CGRectMake(p48.x()/2, p48.x()/2, p64.x()/2-p48.x()/2, p57.y()/2-p66.y()/2);
+ //        [currentView addSubview:topView];
+ //        [currentView addSubview:bottomView];
+ //            //生成path
+ //            CGMutablePathRef path = CGPathCreateMutable();
+ //            CGPoint orginPoint = CGPointMake(p48.x(), p48.y());
+ //            CGPathMoveToPoint(path, NULL, orginPoint.x, orginPoint.y);
+ //            [self addLineToPoint:p49 atPath:path];
+ //            [self addLineToPoint:p50 atPath:path];
+ //            [self addLineToPoint:p51 atPath:path];
+ //            [self addLineToPoint:p52 atPath:path];
+ //            [self addLineToPoint:p53 atPath:path];
+ //            [self addLineToPoint:p54 atPath:path];
+ //            [self addLineToPoint:p64 atPath:path];
+ //            [self addLineToPoint:p65 atPath:path];
+ //            [self addLineToPoint:p62 atPath:path];
+ //            [self addLineToPoint:p61 atPath:path];
+ //            [self addLineToPoint:p60 atPath:path];
+ //            [self addLineToPoint:p48 atPath:path];
+ //
+ //            CAShapeLayer *maskLayer= [CAShapeLayer layer];
+ //            maskLayer.frame = CGRectMake(200, 200, 100, 100);
+ //            maskLayer.path=path;
+ //            maskLayer.fillColor=[UIColor blackColor].CGColor;//填充色
+ //            maskLayer.strokeColor=[UIColor redColor].CGColor;
+ //
+ //            [currentView.layer addSublayer:maskLayer];
+ 
+ 
+ });
+ */
 
 @end
