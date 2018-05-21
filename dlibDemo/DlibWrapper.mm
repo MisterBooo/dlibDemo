@@ -6,13 +6,17 @@
 #include <dlib/image_transforms/draw.h>
 #include <MacTypes.h>
 
-#define kYAddAxleNumber 10
-#define kXAddAxleNumber 30
+#define kYAddAxleNumber 26
+#define kXAddAxleNumber 16
 
 
 @interface DlibWrapper ()
 
 @property (assign) BOOL prepared;
+//** dlib::point */
+@property(assign) dlib::point tempPoint;
+//** flag 是否需要设置tempPoint*/
+@property(nonatomic, assign) BOOL pointFlag;
 + (std::vector<dlib::rectangle>)convertCGRectValueArray:(NSArray<NSValue *> *)rects;
 @end
 @implementation DlibWrapper {
@@ -27,6 +31,7 @@
     self = [super init];
     if (self) {
         _prepared = NO;
+        
     }
     return self;
 }
@@ -129,24 +134,26 @@
         // num_parts:检测到特征点的个数
         unsigned long nums =  shape.num_parts();
 //        NSLog(@"nums:%ld",nums);   输出68个点
-//        dlib::point p_front = shape.part(48);
-//        dlib::point p_back = shape.part(48);
+        dlib::point p_front = shape.part(48);
+        dlib::point p_back = shape.part(48);
        
         //描绘嘴唇的点
         for (unsigned long k = 48; k < nums; k++) {
             // 依次获取特征点
-//            p_back = p_front;
+            p_back = p_front;
             dlib::point p = shape.part(k);
-//            p_front = p;
+            p_front = p;
             //画线
 //            draw_line(img,p_back,p_front,dlib::rgb_pixel(0, 255, 0));
 //            // 在img上画点，参数分别是imge、点坐标、点的半径、点的像素(颜色)
 //            draw_solid_circle(img, p, 6, dlib::rgb_pixel(255, 255, 0));
 //            printf("x:%ld,y:%ld,img:%ld\n",p.x(),p.y(),img.size());
+
             //记录区域点
             switch (k) {
                 case 48:
                     p48 = p;
+            
                     break;
                 case 49:
                     p49 = p;
@@ -156,6 +163,10 @@
                     break;
                 case 51:
                     p51 = p;
+                    if (!self.pointFlag) {
+                        self.tempPoint = p;
+                        self.pointFlag = YES;
+                    }
                     break;
                 case 52:
                     p52 = p;
@@ -216,6 +227,13 @@
 
     }
     dispatch_async(dispatch_get_main_queue(), ^{
+        //1.判断这一次的特征点坐标与上次对比的差值是否小于某个值，如果小于就不重绘，防抖
+        //2.判断是否切换了颜色，切换了颜色图层肯定要刷新的
+        if (fabs(self.tempPoint.x() - p51.x() )< 2 || fabs (self.tempPoint.y() - p51.y()) < 2) {
+            return ;
+        }
+        self.tempPoint = p51;
+        
         //生成path
         CGMutablePathRef topPath = CGPathCreateMutable();
         CGPoint orginPoint = CGPointMake((p48.x() + kXAddAxleNumber)/2 , (p48.y() + kYAddAxleNumber)/2);
@@ -235,8 +253,7 @@
 
         topLayer.path = topPath;
         [currentView.layer addSublayer:topLayer];
-        
-        
+
         //生成path
         CGMutablePathRef bottomPath = CGPathCreateMutable();
         CGPoint bottomOrginPoint = CGPointMake(p48.x()/2 + kXAddAxleNumber, (p48.y() + kYAddAxleNumber)/2);
@@ -253,12 +270,10 @@
         [self addLineToPoint:p58 atPath:bottomPath];
         [self addLineToPoint:p59 atPath:bottomPath];
         [self addLineToPoint:p48 atPath:bottomPath];
-        
+
         bottomLayer.path = bottomPath;
         [currentView.layer addSublayer:bottomLayer];
-        
-        
-        
+
     });
     
 //    NSLog(@"topView.frame:%@",NSStringFromCGRect(topView.frame));

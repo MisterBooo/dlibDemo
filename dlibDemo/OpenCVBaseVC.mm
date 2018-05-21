@@ -210,7 +210,7 @@
 - (void)captureOutput:(AVCaptureOutput *)output didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
     
     //确定人脸方向
-    connection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
+    connection.videoOrientation = AVCaptureVideoOrientationPortrait;
     connection.videoMirrored = YES;
     NSMutableArray *boundsArray = [NSMutableArray array];
     for (AVMetadataObject *faceObject in self.currentMetadata) {
